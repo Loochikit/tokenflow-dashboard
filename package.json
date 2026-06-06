@@ -1,0 +1,16 @@
+{
+  "name": "tokenflow",
+  "version": "1.0.0",
+  "description": "Real-time LLM Token Observability & Telemetry Dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "author": "Bryan Law",
+  "license": "MIT"
+}

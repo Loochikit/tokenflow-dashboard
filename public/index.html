@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO & Portfolio Optimization -->
+  <title>TokenFlow // Portal de Observabilidad y Telemetría LLM en Tiempo Real</title>
+  <meta name="description" content="Proyecto de portafolio de Ingeniería de Software que monitoriza consumo y costos de modelos de inteligencia artificial (LLMs) en tiempo real mediante WebSockets.">
+  <meta name="author" content="Bryan Law - Portfolio Project">
+  
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navegación y Encabezado de Observabilidad -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="logo-pulse">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+      <div class="brand-text">
+        <h1 id="app-title">TOKENFLOW // ENGINE</h1>
+        <p id="app-subtitle">Monitoreo de Costos & Telemetría LLMOps en Tiempo Real</p>
+      </div>
+    </div>
+    
+    <div class="status-panel">
+      <div class="status-indicator">
+        <div class="pulse-dot" id="system-status-dot"></div>
+        <span id="system-status-text" class="mono">CONEXIÓN ESTABLECIDA</span>
+      </div>
+      <div class="api-badge mono">
+        <i class="fa-solid fa-server"></i> PORT: 4000
+      </div>
+      <button class="api-badge mono" id="btn-open-integration" onclick="openIntegrationModal()" style="cursor: pointer; background: rgba(0, 240, 255, 0.08); border-color: rgba(0, 240, 255, 0.3); color: var(--color-cyan); font-weight: 700; transition: all 0.2s ease;">
+        <i class="fa-solid fa-code"></i> Conectar API
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal del Dashboard -->
+  <main class="dashboard-grid">
+    
+    <!-- Barra Lateral: Controles y Ficha de Ingeniero -->
+    <aside class="sidebar-layout">
+      
+      <!-- Ficha Profesional de Ingeniería -->
+      <section class="panel-card academic-card" id="developer-profile-section">
+        <div class="card-icon-overlay">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <h2 class="panel-title">Desarrollador <span>Profile</span></h2>
+        <div class="student-header">
+          <div class="avatar-replacement">BL</div>
+          <div>
+            <h3 class="student-name">Bryan Law</h3>
+            <p class="student-subtitle">Ingeniero de Software (Último Año)</p>
+          </div>
+        </div>
+        <p class="card-intro">
+          Este proyecto full-stack demuestra la implementación de pipelines de telemetría de alto rendimiento, manipulación asíncrona de datos en vivo y diseño de sistemas extensibles para IA.
+        </p>
+        <div class="profile-details mono">
+          <div class="detail-item">
+            <span class="lbl"><i class="fa-solid fa-code-branch"></i> Rol Meta:</span>
+            <span class="val">Software Engineer (LLMOps)</span>
+          </div>
+          <div class="detail-item">
+            <span class="lbl"><i class="fa-solid fa-diagram-project"></i> Estilo:</span>
+            <span class="val">Clean Architecture / OOP</span>
+          </div>
+          <div class="detail-item">
+            <span class="lbl"><i class="fa-solid fa-network-wired"></i> Backend:</span>
+            <span class="val">Node.js + WebSockets</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel de Control del Simulador de Tráfico -->
+      <section class="panel-card" id="traffic-simulator-section">
+        <h2 class="panel-title">Simulador de Tráfico <span>LLM Stream</span></h2>
+        <p class="panel-desc">
+          Controla la intensidad del flujo de peticiones artificiales del servidor para auditar la respuesta visual del portal de observabilidad.
+        </p>
+        <div class="traffic-controls">
+          <button class="traffic-btn" id="btn-traffic-idle" onclick="setTrafficMode('idle')">
+            <i class="fa-solid fa-moon"></i> Inactivo <span>(Idle)</span>
+          </button>
+          <button class="traffic-btn active" id="btn-traffic-normal" onclick="setTrafficMode('normal')">
+            <i class="fa-solid fa-play"></i> Producción <span>(Normal)</span>
+          </button>
+          <button class="traffic-btn" id="btn-traffic-peak" onclick="setTrafficMode('peak')">
+            <i class="fa-solid fa-bolt-lightning text-yellow"></i> Pico <span>(Peak Load)</span>
+          </button>
+          <button class="traffic-btn" id="btn-traffic-errors" onclick="setTrafficMode('errors')">
+            <i class="fa-solid fa-triangle-exclamation text-red"></i> Inyectar 429 <span>(Errors)</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Administrador de Modelos Dinámicos -->
+      <section class="panel-card" id="models-list-section">
+        <div class="section-header-row">
+          <h2 class="panel-title">Registro de Modelos <span>Active</span></h2>
+          <button class="btn-icon-add" id="btn-open-model-modal" onclick="openModelModal()" title="Registrar nuevo modelo">
+            <i class="fa-solid fa-circle-plus"></i>
+          </button>
+        </div>
+        <p class="panel-desc">
+          Modelos actualmente configurados. El sistema calcula los costos dinámicamente según sus tarifas de entrada y salida por millón de tokens.
+        </p>
+        <div class="models-list-wrapper" id="models-list-container">
+          <!-- Inyectado dinámicamente desde JS -->
+          <div class="loading-placeholder">
+            <i class="fa-solid fa-spinner fa-spin"></i> Cargando registro de modelos...
+          </div>
+        </div>
+      </section>
+      
+    </aside>
+
+    <!-- Área de Trabajo Principal: Métricas, Gráficas y Logs -->
+    <div class="workspace-layout">
+      
+      <!-- Panel de Métricas KPI Clave (Hoy) -->
+      <section class="kpi-container" aria-label="Métricas de Hoy">
+        
+        <!-- KPI 1: Tokens Consumidos -->
+        <article class="kpi-card" id="kpi-tokens">
+          <div class="kpi-header">
+            <span class="kpi-label">Tokens Totales (Hoy)</span>
+            <div class="kpi-icon-wrapper purple"><i class="fa-solid fa-coins"></i></div>
+          </div>
+          <div class="kpi-value" id="kpi-tokens-val">0</div>
+          <div class="kpi-footer mono">
+            <span class="text-purple"><i class="fa-solid fa-arrow-right-to-bracket"></i> In: <span id="kpi-tokens-in">0</span></span>
+            <span class="text-blue" style="margin-left: 10px;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Out: <span id="kpi-tokens-out">0</span></span>
+          </div>
+        </article>
+
+        <!-- KPI 2: Costo Acumulado -->
+        <article class="kpi-card" id="kpi-cost">
+          <div class="kpi-header">
+            <span class="kpi-label">Costo Estimado</span>
+            <div class="kpi-icon-wrapper green"><i class="fa-solid fa-dollar-sign"></i></div>
+          </div>
+          <div class="kpi-value" id="kpi-cost-val">$0.0000</div>
+          <div class="kpi-footer text-muted font-sm">
+            Basado en tarifas individuales de entrada/salida
+          </div>
+        </article>
+
+        <!-- KPI 3: Latencia Promedio -->
+        <article class="kpi-card" id="kpi-latency">
+          <div class="kpi-header">
+            <span class="kpi-label">Latencia Media (Hoy)</span>
+            <div class="kpi-icon-wrapper yellow"><i class="fa-solid fa-gauge-high"></i></div>
+          </div>
+          <div class="kpi-value" id="kpi-latency-val">0 ms</div>
+          <div class="kpi-footer text-muted mono font-sm">
+            Velocidad del proveedor LLM
+          </div>
+        </article>
+
+        <!-- KPI 4: Tasa de Éxito -->
+        <article class="kpi-card" id="kpi-success">
+          <div class="kpi-header">
+            <span class="kpi-label">Ratio de Éxito / Errores</span>
+            <div class="kpi-icon-wrapper cyan" id="kpi-success-icon-wrap"><i class="fa-solid fa-check-double"></i></div>
+          </div>
+          <div class="kpi-value" id="kpi-success-val">100%</div>
+          <div class="kpi-footer mono font-sm" id="kpi-success-errors-lbl">
+            Errores totales: <span id="kpi-errors-count">0</span>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Panel Central de Gráficas -->
+      <section class="charts-grid-layout" aria-label="Análisis Gráfico de Telemetría">
+        
+        <!-- Gráfica 1: Tráfico en tiempo real (TPS) -->
+        <article class="panel-card chart-card" id="chart-live-wrapper">
+          <h2 class="panel-title">Rendimiento en Vivo <span>Tokens por Segundo (TPS)</span></h2>
+          <div class="canvas-container">
+            <canvas id="chart-live-telemetry"></canvas>
+          </div>
+        </article>
+        
+        <!-- Gráfica 2: Costo Acumulado por Modelo -->
+        <article class="panel-card chart-card" id="chart-models-wrapper">
+          <h2 class="panel-title">Consumo por Modelo <span>Porcentaje de Costos (USD)</span></h2>
+          <div class="canvas-container doughnut-wrapper">
+            <canvas id="chart-models-doughnut"></canvas>
+          </div>
+        </article>
+
+        <!-- Gráfica 3: Historial por Horas -->
+        <article class="panel-card chart-card span-full" id="chart-history-wrapper">
+          <h2 class="panel-title">Perfil de Consumo Diario <span>Historial por Hora (Últimas 24h)</span></h2>
+          <div class="canvas-container">
+            <canvas id="chart-history-bar"></canvas>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Consola Unificada de Logs de Telemetría en Vivo -->
+      <section class="panel-card console-card" id="telemetry-logs-section">
+        <div class="console-header">
+          <h2 class="panel-title">Consola de Telemetría LLMOps <span>Live Streaming Logs</span></h2>
+          <div class="console-filters">
+            <input type="text" id="log-search-input" placeholder="Buscar por modelo o error..." onkeyup="filterLogs()">
+            <button class="btn-clear-console" onclick="clearConsoleLogs()" title="Limpiar Consola">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="console-box" id="syslog-console">
+          <div class="console-line system-line">
+            <span class="log-time">[00:00:00]</span>
+            <span class="log-tag tag-sys">SYS</span>
+            <span class="log-text">Iniciando motor de telemetría y esperando flujo de datos...</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal para Agregar/Editar Modelos -->
+  <div class="modal-overlay" id="model-modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title-text"><i class="fa-solid fa-robot"></i> Registrar Nuevo Modelo LLM</h3>
+        <button class="btn-modal-close" onclick="closeModelModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="model-form" onsubmit="saveModelEvent(event)">
+        <div class="form-group">
+          <label for="model-id">Identificador único (ID del Modelo en la API)</label>
+          <input type="text" id="model-id" required placeholder="ej. gpt-5-turbo o claude-4-sonnet">
+        </div>
+        <div class="form-group">
+          <label for="model-name">Nombre Comercial / Descriptivo</label>
+          <input type="text" id="model-name" required placeholder="ej. GPT-5 Turbo (Alpha)">
+        </div>
+        <div class="form-group">
+          <label for="model-provider">Proveedor del Modelo</label>
+          <input type="text" id="model-provider" required placeholder="ej. OpenAI, Anthropic, Google, LlamaIndex">
+        </div>
+        <div class="form-row-double">
+          <div class="form-group">
+            <label for="model-price-in">Costo Input ($ USD / 1M tokens)</label>
+            <input type="number" id="model-price-in" step="0.0001" min="0" required placeholder="ej. 5.00">
+          </div>
+          <div class="form-group">
+            <label for="model-price-out">Costo Output ($ USD / 1M tokens)</label>
+            <input type="number" id="model-price-out" step="0.0001" min="0" required placeholder="ej. 15.00">
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeModelModal()">Cancelar</button>
+          <button type="submit" class="btn-primary" id="btn-save-model">Guardar Configuración</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para Guía de Integración -->
+  <div class="modal-overlay" id="integration-modal-overlay">
+    <div class="modal-card" style="width: 650px; max-width: 95%;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-code"></i> Guía de Integración (Real-Time SDKs)</h3>
+        <button class="btn-modal-close" onclick="closeIntegrationModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="panel-desc">
+        Apunta tus desarrollos de Inteligencia Artificial al Gateway de TokenFlow para monitorear el consumo en tiempo real.
+      </p>
+      
+      <div class="modal-tabs" style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+        <button class="tab-btn active" onclick="switchTab('tab-openai')" id="btn-tab-openai" style="background: none; border: none; color: var(--color-cyan); border-bottom: 2px solid var(--color-cyan); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-sans); font-weight: 600; font-size: 0.8rem;">OpenAI / Ollama</button>
+        <button class="tab-btn" onclick="switchTab('tab-anthropic')" id="btn-tab-anthropic" style="background: none; border: none; color: var(--text-secondary); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-sans); font-weight: 600; font-size: 0.8rem;">Anthropic Claude</button>
+        <button class="tab-btn" onclick="switchTab('tab-gemini')" id="btn-tab-gemini" style="background: none; border: none; color: var(--text-secondary); padding: 0.5rem 1rem; cursor: pointer; font-family: var(--font-sans); font-weight: 600; font-size: 0.8rem;">Google Gemini</button>
+      </div>
+
+      <!-- Tab OpenAI -->
+      <div class="tab-content" id="tab-openai">
+        <h4 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-primary); margin-bottom: 0.5rem;">Peticiones a OpenAI / Ollama Local</h4>
+        <p class="panel-desc">Modifica el <code>baseURL</code> en el SDK de tu lenguaje favorito para pasar por nuestro proxy local:</p>
+        <div style="background: #090c13; padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1rem;">
+          <pre class="mono" style="font-size: 0.72rem; color: #adbac7; overflow-x: auto; white-space: pre; margin: 0; line-height: 1.4;"><code class="language-python"># En Python usando openai-python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:4000/v1",
+    api_key="TU_OPENAI_API_KEY"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Hola!"}]
+)</code></pre>
+        </div>
+      </div>
+
+      <!-- Tab Anthropic -->
+      <div class="tab-content" id="tab-anthropic" style="display: none;">
+        <h4 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-primary); margin-bottom: 0.5rem;">Peticiones a Anthropic Claude</h4>
+        <p class="panel-desc">Redirige el cliente de Claude al puerto del proxy:</p>
+        <div style="background: #090c13; padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1rem;">
+          <pre class="mono" style="font-size: 0.72rem; color: #adbac7; overflow-x: auto; white-space: pre; margin: 0; line-height: 1.4;"><code class="language-python"># En Python usando anthropic-python
+from anthropic import Anthropic
+
+client = Anthropic(
+    base_url="http://localhost:4000/v1",
+    api_key="TU_CLAUDE_API_KEY"
+)
+
+message = client.messages.create(
+    model="claude-3-5-sonnet",
+    max_tokens=500,
+    messages=[{"role": "user", "content": "Hola Claude!"}]
+)</code></pre>
+        </div>
+      </div>
+
+      <!-- Tab Gemini -->
+      <div class="tab-content" id="tab-gemini" style="display: none;">
+        <h4 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-primary); margin-bottom: 0.5rem;">Peticiones a Google Gemini</h4>
+        <p class="panel-desc">Apunta tu endpoint HTTP al puerto local utilizando el API Key como query parameter:</p>
+        <div style="background: #090c13; padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1rem;">
+          <pre class="mono" style="font-size: 0.72rem; color: #adbac7; overflow-x: auto; white-space: pre; margin: 0; line-height: 1.4;"><code class="language-bash"># Consulta HTTP POST en tiempo real
+POST http://localhost:4000/v1beta/models/gemini-1.5-flash:generateContent?key=TU_GEMINI_API_KEY
+Content-Type: application/json
+
+{
+  "contents": [{
+    "parts": [{"text": "Hola Gemini!"}]
+  }]
+}</code></pre>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeIntegrationModal()">Cerrar Guía</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de Página -->
+  <footer class="app-footer">
+    <p>TokenFlow Telemetry Engine // Código Abierto Licencia MIT // Diseñado por Bryan Law // 2026</p>
+  </footer>
+
+  <!-- Scripts: Socket.io, Chart.js y Lógica de App -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
