@@ -17,6 +17,11 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Ruta explícita para servir el index.html en el root
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Archivos de Persistencia
 const MODELS_FILE = path.join(__dirname, 'models.json');
 const HISTORY_FILE = path.join(__dirname, 'history.json');
